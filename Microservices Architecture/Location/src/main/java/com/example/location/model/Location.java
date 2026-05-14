@@ -1,4 +1,4 @@
-package org.example.location.model;
+package com.example.location.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class Location {
 
     @Id
@@ -19,18 +19,11 @@ public class Location {
     private int id;
 
     @NonNull
-    private String city;
+    private Double longitude;
 
-    private double latitude;
+    @NonNull
+    private Double latitude;
 
-    private double longitude;
-
-    public Location(String city,
-                    double latitude,
-                    double longitude) {
-
-        this.city = city;
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
+    @NonNull
+    private String name;
 }
