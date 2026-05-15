@@ -1,15 +1,11 @@
 package com.example.weather.controller;
 
+import com.example.weather.model.Main;
 import com.example.weather.model.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 public class WeatherController {
@@ -23,22 +19,10 @@ public class WeatherController {
     @Value("${url.weather}")
     private String urlWeather;
 
-    private final Map<String, Root> cache = new HashMap<>();
-    private final Map<String, Long> cacheTime = new HashMap<>();
-
     @GetMapping("/weather")
-    public Root getWeather(@RequestParam String lat,
-                           @RequestParam String lon) {
-
-        String key = lat + "_" + lon;
-
-        long currentTime = System.currentTimeMillis();
-
-        if (cache.containsKey(key)
-                && currentTime - cacheTime.get(key) < 60000) {
-
-            return cache.get(key);
-        }
+    public Main getWeather(
+            @RequestParam String lat,
+            @RequestParam String lon) {
 
         String request = String.format(
                 "%s?lat=%s&lon=%s&units=metric&appid=%s",
@@ -48,12 +32,8 @@ public class WeatherController {
                 appId
         );
 
-        Root response =
-                restTemplate.getForObject(request, Root.class);
-
-        cache.put(key, response);
-        cacheTime.put(key, currentTime);
-
-        return response;
+        return restTemplate
+                .getForObject(request, Root.class)
+                .getMain();
     }
 }

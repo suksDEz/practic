@@ -1,7 +1,5 @@
-
 POST http://localhost:8083/location
 Content-Type: application/json
-###
 
 {
   "latitude": 54.1838,
