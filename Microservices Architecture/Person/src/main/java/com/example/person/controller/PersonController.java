@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
 
 @RestController
 @RequestMapping("/person")
@@ -20,6 +21,9 @@ public class PersonController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Value("${location.url}")
+    private String locationUrl;
 
     @GetMapping
     public Iterable<User> getAll() {
@@ -82,10 +86,15 @@ public class PersonController {
                             .get()
                             .getLocation();
 
+            String url = String.format(
+                    "http://%s/location/weather?name=%s",
+                    locationUrl,
+                    location
+            );
+
             Weather weather =
                     restTemplate.getForObject(
-                            "http://LOCATION-SERVICE/location/weather?name="
-                                    + location,
+                            url,
                             Weather.class
                     );
 
@@ -95,9 +104,6 @@ public class PersonController {
             );
         }
 
-        return new ResponseEntity<>(
-                null,
-                HttpStatus.NOT_FOUND
-        );
+        return ResponseEntity.notFound().build();
     }
 }

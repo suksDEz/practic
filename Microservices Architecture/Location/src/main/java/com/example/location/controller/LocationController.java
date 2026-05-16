@@ -7,6 +7,7 @@ import com.example.location.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Optional;
 
@@ -19,6 +20,9 @@ public class LocationController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Value("${weather.url}")
+    private String weatherUrl;
 
     @GetMapping
     public Iterable<Location> getAll() {
@@ -39,7 +43,8 @@ public class LocationController {
         Location location = optional.get();
 
         String request = String.format(
-                "http://WEATHER-INFO-SERVICE/weather?lat=%s&lon=%s",
+                "http://%s/weather?lat=%s&lon=%s",
+                weatherUrl,
                 location.getLatitude(),
                 location.getLongitude()
         );
